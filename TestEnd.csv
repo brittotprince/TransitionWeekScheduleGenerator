@@ -1,0 +1,2 @@
+login,emp_id,team,title,workgroup,workdays,start,end,sun,mon,tue,wed,thu,fri,sat,fte,name,lunch_start,lunch_end,brk1_start,brk1_end,brk2_start,brk2_end,brk3_start,brk3_end,lunch2_start,lunch2_end,tm_day,tm_start,tm_end
+sdevul,,,,MHLS USA Frontline Voice IND,,5:00,14:00,1,1,0,0,1,1,1,,,9:15,10:00,7:00,7:15,12:00,12:15,,,,,,,
