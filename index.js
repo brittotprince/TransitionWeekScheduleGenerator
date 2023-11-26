@@ -131,7 +131,7 @@ async function main() {
           }
         } else {
           //Without data
-          if (daysParsedAfterLastOff > 0 && daysParsedAfterLastOff < 5) {
+          if (daysParsedAfterLastOff >= 0 && daysParsedAfterLastOff < 5) {
             daysParsedAfterLastOff += 1;
             finalArr[i] = "1";
           } else if (daysParsedAfterLastOff == 5) {
