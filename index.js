@@ -46,7 +46,7 @@ function doAFinalVerification(arr, name) {
 function setRestOffDaysAs1(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === undefined) {
-      arr[i] = 1;
+      arr[i] = "1";
     }
   }
   return arr;
@@ -161,9 +161,9 @@ async function main() {
             function shouldWegiveOffTmrw() {
               let offTmrw = dayOffNextWeek - (i + 1) <= 5 ? true : false;
               if (offTmrw) {
-                finalArr[i + 1] = 0;
+                finalArr[i + 1] = "0";
               } else {
-                finalArr[dayOffNextWeek - 5 - 1] = 0;
+                finalArr[dayOffNextWeek - 5 - 1] = "0";
               }
               setRestOffDaysAs1(finalArr);
               breakLoop = true;
