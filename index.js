@@ -2,8 +2,8 @@ const fs = require("fs");
 const csv = require("csv-parser");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
-const filePath1 = "Test.csv";
-const filePath2 = "TestEnd.csv";
+const filePath1 = "Test2.csv";
+const filePath2 = "TestEnd2.csv";
 
 const results = [];
 
@@ -38,8 +38,20 @@ function createObj(weeksArray) {
   const resultObject = {};
   weeksArray.forEach((item, index) => {
     const weekNumber = Math.floor(index / 7) + 1; // Calculate the week number (1, 2, or 3)
+    let weekName;
+    switch (weekNumber) {
+      case 1:
+        weekName = "CW";
+        break;
+      case 2:
+        weekName = "TW";
+        break;
+      case 3:
+        weekName = "RW";
+        break;
+    }
     const dayOfWeek = weekDays[index % 7]; // Calculate the day of the week (Sun, Mon, ..., Sat)
-    const key = `${dayOfWeek}${weekNumber}`;
+    const key = `${dayOfWeek}${weekName}`;
 
     resultObject[key] = item;
   });
