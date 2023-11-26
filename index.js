@@ -26,6 +26,23 @@ function findOffForEmpInRolloverWeek(arr, currentIndex) {
   return correctIndex;
 }
 
+function doAFinalVerification(arr, name) {
+  const startIndex = 7; // of Transition Week
+  const endIndex = 14;
+
+  const subarray = arr.slice(startIndex, endIndex);
+
+  // Count the occurrences of 1 in the subarray using reduce
+  const countOfWorkingDays = subarray.reduce(
+    (count, value) => count + (value === 1 ? 1 : 0),
+    0
+  );
+  if (countOfWorkingDays > 5)
+    console.error(
+      `${name}: Number of working days is ${countOfWorkingDays} in transition week`
+    );
+}
+
 function setRestOffDaysAs1(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === undefined) {
@@ -156,6 +173,7 @@ async function main() {
         }
       }
       console.log(finalArr);
+      doAFinalVerification(finalArr, data?.login);
       finalData.push(createObj(finalArr));
     }
     createNWriteDataToCsv(finalData);
