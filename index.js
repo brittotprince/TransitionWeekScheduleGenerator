@@ -21,7 +21,9 @@ const filterRequiredDate = (data) => {
 };
 
 function findOffForEmpInRolloverWeek(arr, currentIndex) {
-  return arr.slice(currentIndex + 1).indexOf("0");
+  const nextOffIndexInRestOfDaysArr = arr.slice(currentIndex + 1).indexOf("0");
+  const correctIndex = currentIndex + nextOffIndexInRestOfDaysArr + 1;
+  return correctIndex;
 }
 
 function setRestOffDaysAs1(arr) {
@@ -140,11 +142,11 @@ async function main() {
             empGotOffTdy = true;
             let dayOffNextWeek = findOffForEmpInRolloverWeek(finalArr, i);
             function shouldWegiveOffTmrw() {
-              let offTmrw = dayOffNextWeek - i < 5 ? true : false;
+              let offTmrw = dayOffNextWeek - (i + 1) <= 5 ? true : false;
               if (offTmrw) {
                 finalArr[i + 1] = 0;
               } else {
-                finalArr[dayOffNextWeek - 5] = 0;
+                finalArr[dayOffNextWeek - 5 - 1] = 0;
               }
               setRestOffDaysAs1(finalArr);
               breakLoop = true;
