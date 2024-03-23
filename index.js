@@ -52,9 +52,9 @@ function setRestOffDaysAs1(arr) {
   return arr;
 }
 
-function createObj(weeksArray) {
+function createObj(weeksArray, userName) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const resultObject = {};
+  const resultObject = { login: userName };
   weeksArray.forEach((item, index) => {
     const weekNumber = Math.floor(index / 7) + 1; // Calculate the week number (1, 2, or 3)
     let weekName;
@@ -102,9 +102,25 @@ const createNWriteDataToCsv = (finalData) => {
 
   csvWriter
     .writeRecords(newData)
-    .then(() => console.log("New CSV file has been written successfully"))
+    .then(() => console.log("New CSV file has been created successfully"))
     .catch((error) => console.error("Error writing CSV file:", error));
 };
+
+const generateTotalEmpNoPerDay = (finalData) =>{
+  const lastRow = {...finalData[0]} //Cloning first row to update it with sum
+  lastRow.login = "Headcount for the day"
+  Object.keys(lastRow).forEach((eachDayName) =>{
+    if(eachDayName === "login"){
+      return
+    }
+    let headcount4TheDay = 0
+    finalData.forEach((eachEmployeeData)=>{
+      headcount4TheDay += parseInt(eachEmployeeData[eachDayName])
+    })
+    lastRow[eachDayName] = headcount4TheDay
+  })
+  finalData.push(lastRow)
+}
 
 async function main() {
   const finalData = [];
@@ -113,15 +129,16 @@ async function main() {
       readCsvFile(filePath1),
       readCsvFile(filePath2),
     ]);
-    console.log(results1);
-    console.log(results2);
+    // console.log(results1);
+    // console.log(results2);
     minLengthOfFile = Math.min(results1.length, results2.length);
     for (eachRowIndex = 0; eachRowIndex < minLengthOfFile; eachRowIndex++) {
+      console.log("Generating data for employee ", eachRowIndex + 1);
       let data = results1[eachRowIndex];
       let endWeekData = results2[eachRowIndex];
       const filteredData = filterRequiredDate(data);
       const filteredendWeekData = filterRequiredDate(endWeekData);
-      console.log(filteredData);
+      // console.log(filteredData);
       let empGotOffTdy = false;
       let daysParsedAfterLastOff = 0;
       const finalArr = [
@@ -172,10 +189,13 @@ async function main() {
           }
         }
       }
-      console.log(finalArr);
+      // console.log(finalArr);
+      console.log("Validating data generated");
       doAFinalVerification(finalArr, data?.login);
-      finalData.push(createObj(finalArr));
+      let finalObj = createObj(finalArr, data?.login);
+      finalData.push(finalObj);
     }
+    generateTotalEmpNoPerDay(finalData);
     createNWriteDataToCsv(finalData);
   } catch (error) {
     console.error("Error reading CSV files:", error);
