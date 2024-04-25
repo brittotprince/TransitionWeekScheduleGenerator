@@ -52,9 +52,10 @@ function setRestOffDaysAs1(arr) {
   return arr;
 }
 
-function createObj(weeksArray, userName) {
+function createObj(weeksArray, userName, endWeekData) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const resultObject = { login: userName };
+  let firstTWWeekOffHighlighted = false;
   weeksArray.forEach((item, index) => {
     const weekNumber = Math.floor(index / 7) + 1; // Calculate the week number (1, 2, or 3)
     let weekName;
@@ -71,9 +72,16 @@ function createObj(weeksArray, userName) {
     }
     const dayOfWeek = weekDays[index % 7]; // Calculate the day of the week (Sun, Mon, ..., Sat)
     const key = `${dayOfWeek}${weekName}`;
+    if (weekNumber === 2 && item === "0" && !firstTWWeekOffHighlighted) {
+      item = "0*";
+      firstTWWeekOffHighlighted = true;
+    }
 
     resultObject[key] = item;
   });
+  resultObject["New Start Time (From Highlighted Day)"] = endWeekData.start;
+  resultObject["New End Time (From Highlighted Day)"] = endWeekData.end;
+
   return resultObject;
 }
 
@@ -106,21 +114,21 @@ const createNWriteDataToCsv = (finalData) => {
     .catch((error) => console.error("Error writing CSV file:", error));
 };
 
-const generateTotalEmpNoPerDay = (finalData) =>{
-  const lastRow = {...finalData[0]} //Cloning first row to update it with sum
-  lastRow.login = "Headcount for the day"
-  Object.keys(lastRow).forEach((eachDayName) =>{
-    if(eachDayName === "login"){
-      return
+const generateTotalEmpNoPerDay = (finalData) => {
+  const lastRow = { ...finalData[0] }; //Cloning first row to update it with sum
+  lastRow.login = "Headcount for the day";
+  Object.keys(lastRow).forEach((eachDayName) => {
+    if (eachDayName === "login") {
+      return;
     }
-    let headcount4TheDay = 0
-    finalData.forEach((eachEmployeeData)=>{
-      headcount4TheDay += parseInt(eachEmployeeData[eachDayName])
-    })
-    lastRow[eachDayName] = headcount4TheDay
-  })
-  finalData.push(lastRow)
-}
+    let headcount4TheDay = 0;
+    finalData.forEach((eachEmployeeData) => {
+      headcount4TheDay += parseInt(eachEmployeeData[eachDayName]);
+    });
+    lastRow[eachDayName] = headcount4TheDay;
+  });
+  finalData.push(lastRow);
+};
 
 async function main() {
   const finalData = [];
@@ -192,7 +200,7 @@ async function main() {
       // console.log(finalArr);
       console.log("Validating data generated");
       doAFinalVerification(finalArr, data?.login);
-      let finalObj = createObj(finalArr, data?.login);
+      let finalObj = createObj(finalArr, data?.login, endWeekData);
       finalData.push(finalObj);
     }
     generateTotalEmpNoPerDay(finalData);
