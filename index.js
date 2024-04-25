@@ -6,6 +6,8 @@ const filePath1 = "Test2.csv";
 const filePath2 = "TestEnd2.csv";
 
 const results = [];
+const today = new Date();
+const trialEndDate = new Date(2024, 5, 30); // June 30, 2024 (month is 0-indexed)
 
 const filterRequiredDate = (data) => {
   let returnData = [
@@ -204,10 +206,19 @@ async function main() {
       finalData.push(finalObj);
     }
     generateTotalEmpNoPerDay(finalData);
-    createNWriteDataToCsv(finalData);
+    if(today > trialEndDate){
+      console.log("Contact 'brittotprince@gmail.com' for renewing the product");
+    }else{
+      createNWriteDataToCsv(finalData);
+    }
   } catch (error) {
     console.error("Error reading CSV files:", error);
   }
 }
 
-main();
+if (today > trialEndDate) {
+  console.error("Trial period ended on June 2024. Contact 'brittotprince@gmail.com' for renewing the product");
+} else {
+  main();
+}
+
